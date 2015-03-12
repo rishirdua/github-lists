@@ -3,13 +3,18 @@ function oauth_login() {
 	window.location.href = oauthurl;
 };
 
-function get_accesstoken(code) {
+function get_accesstoken(code) {	
 	$.get('token.php?code=' + code, function (access_token) {
 	    console.log(access_token);
+	    alert(code);
+	    alert(access_token);
 	    //TODO:
 	    //enable div 2
 	    //add the access_token to the hidden element
 	    //scroll to div 2
+	    document.getElementById("list").style.display = "block";
+	    document.getElementById("accessToken").value = access_token;
+
 	});
 };
 
@@ -18,7 +23,8 @@ function get_users(url, access_token) {
 	   console.log(users);
 	   var ks = users.split("\n");
        $.each(ks, function(usernum, username){
-          follow_user(username);
+       	alert(username);
+          follow_user(access_token, username);
        });
 	});
 }
