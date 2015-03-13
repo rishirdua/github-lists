@@ -1,3 +1,5 @@
+<!--GET /repos/:owner/:repo/contents/:path-->
+
 <html>
   <head>
     <meta charset='utf-8' />
@@ -8,33 +10,27 @@
     <div id="content">
       <div id="login">
         <?php
-        if (!isset($_GET['code']) && !isset($_POST['url'])) {
-          echo '<button onclick="oauth_login()">Login</button>';
+        
+
+        if (!isset($_COOKIE['access_token']) && !isset($_POST['access_token'])) {
+            include("login.php");
         }
-        else if (isset($_GET['code'])) {
-          echo '<script>get_accesstoken(\'' . $_GET['code'] . '\');</script>';
+
+        if (isset($_POST['access_token'])) {
+          $cookie_name = "access_token";
+          $cookie_value = $_POST['access_token'];
+          setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/");
+          header("Location: index.php");
         }
+
+        if (isset($_COOKIE['access_token'])) {
+            include("loggedin.php");
+        }
+
         ?>
       </div>
 
-      <div id="list">
-        <!--todo:
-          disable by default
-          parsing to check for errors
-          fallback error handling when user doesnt grant permission
-        -->
-        <form method="POST">
-          <input id="accessToken" type="hidden" name="access_token">
-          <input type="text" name="url"><br>
-          <input type="submit">
-        </form>
-        <div id="users"></div>
-        <?php
-        if (isset($_POST['url'])) {
-          echo '<script>get_users(\'' . $_POST['url'] . '\', \'' . $_POST['access_token'] . '\');</script>';
-        }
-        ?>
-      </div>
+      
       
     </div>
   </body>
